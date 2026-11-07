@@ -1,0 +1,1040 @@
+/* ==========================================================================
+   MIS 18 · EDICIÓN INGENIERÍA EN INFORMÁTICA
+   Estilos principales: Layout Stream con fotos en recuadros laterales
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIABLES Y TEMA
+   -------------------------------------------------------------------------- */
+:root {
+  --bg-dark: #05070f;
+  --bg-card: rgba(8, 14, 34, 0.88);
+  --bg-card-border: rgba(52, 224, 255, 0.28);
+  --bg-card-hover: rgba(12, 20, 48, 0.94);
+
+  /* Paleta Neón / Cyber / Terminal */
+  --cyan: #34e0ff;
+  --cyan-glow: rgba(52, 224, 255, 0.35);
+  --terminal-green: #00ff9d;
+  --violet: #8a5cff;
+  --magenta: #ff3fd0;
+  --silver: #cbd5e1;
+  --muted: #64748b;
+  --card-glass: rgba(6, 12, 29, 0.88);
+
+  /* Tipografías */
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.lock {
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   2. FONDOS ATMOSFÉRICOS (GRILLA CIBERNÉTICA Y RESPLANDORES NEÓN)
+   -------------------------------------------------------------------------- */
+.bg-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: var(--violet);
+  top: -100px;
+  left: -150px;
+  animation: float-orb 12s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  width: 600px;
+  height: 600px;
+  background: var(--cyan);
+  top: 40%;
+  right: -200px;
+  animation: float-orb 15s ease-in-out infinite alternate-reverse;
+}
+
+.orb-3 {
+  width: 550px;
+  height: 550px;
+  background: var(--magenta);
+  bottom: -150px;
+  left: 20%;
+  animation: float-orb 18s ease-in-out infinite alternate;
+}
+
+@keyframes float-orb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, 40px) scale(1.1); }
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(52, 224, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 224, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Textura CRT / Scanlines sutil */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.5) 0px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+header, main, footer, .ticker {
+  position: relative;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   3. PANTALLA INICIAL (GATE / BOOT TERMINAL - 100% RESPONSIVE)
+   -------------------------------------------------------------------------- */
+#gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: rgba(3, 5, 12, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 0;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 1.25rem;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s ease;
+}
+
+#gate.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gate-box {
+  background: rgba(10, 18, 40, 0.94);
+  border: 1px solid var(--cyan);
+  border-radius: 18px;
+  padding: clamp(1.4rem, 5vw, 2.5rem);
+  box-shadow: 0 0 50px rgba(52, 224, 255, 0.3);
+  max-width: 520px;
+  width: min(94vw, 520px);
+  text-align: left;
+}
+
+.gate-cmd {
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  color: var(--terminal-green);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  word-break: break-all;
+}
+
+.gate-cmd .cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: var(--terminal-green);
+  animation: blink 0.9s steps(1) infinite;
+}
+
+.gate-title {
+  display: block;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(1.35rem, 5vw, 1.9rem);
+  line-height: 1.3;
+  color: #ffffff;
+  margin-bottom: 0.8rem;
+}
+
+.gate-hint {
+  display: block;
+  font-size: 0.96rem;
+  color: var(--silver);
+  line-height: 1.45;
+}
+
+.gate-btn-cta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.4rem;
+  background: var(--cyan);
+  color: #020c15;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 var(--magenta);
+  width: 100%;
+}
+
+.gate-btn-cta .btn-code {
+  color: #020c15;
+  font-weight: 800;
+}
+
+.gate-btn-cta .btn-comment {
+  color: #04243a;
+  font-size: 0.8rem;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   4. RECUADROS DE FOTOS LATERALES (.PHOTO-CARD)
+   -------------------------------------------------------------------------- */
+.photo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  border-radius: 16px;
+  padding: 0.6rem;
+  box-shadow: 
+    0 16px 36px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(52, 224, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+.photo-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--cyan);
+  box-shadow: 
+    0 22px 45px rgba(0, 0, 0, 0.7),
+    0 0 35px rgba(52, 224, 255, 0.28);
+}
+
+.photo-card-wrap {
+  width: 100%;
+  height: 330px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #020510;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-card-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.96;
+  transition: transform 0.5s ease;
+}
+
+.photo-card:hover .photo-card-wrap img {
+  transform: scale(1.05);
+}
+
+/* --------------------------------------------------------------------------
+   5. HERO STREAM (HERO CON FOTOS 1 Y 2 EN LOS COSTADOS)
+   -------------------------------------------------------------------------- */
+.hero-stream {
+  min-height: 94svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: 3rem 1.5rem 3.5rem;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.hero-photo {
+  max-width: 290px;
+  flex: 0 0 290px;
+}
+
+.hero-photo.left {
+  transform: rotate(-2deg);
+}
+
+.hero-photo.right {
+  transform: rotate(2deg);
+}
+
+.hero-photo:hover {
+  transform: rotate(0deg) translateY(-5px);
+}
+
+.hero-center {
+  flex: 1;
+  max-width: 580px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: rgba(52, 224, 255, 0.08);
+  border: 1px solid rgba(52, 224, 255, 0.35);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--cyan);
+  margin-bottom: 1.4rem;
+  backdrop-filter: blur(10px);
+}
+
+.tech-badge .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--terminal-green);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--terminal-green);
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.num {
+  position: relative;
+  margin: 0;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(8rem, 38vw, 16rem);
+  line-height: 0.85;
+  letter-spacing: -0.07em;
+  color: #ffffff;
+  text-shadow:
+    -4px 0 rgba(255, 63, 208, 0.85),
+    4px 0 rgba(52, 224, 255, 0.85),
+    0 0 50px rgba(52, 224, 255, 0.4);
+}
+
+.num::before,
+.num::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: none;
+}
+
+.num::before { color: var(--cyan); }
+.num::after  { color: var(--magenta); }
+
+.num.glitch::before {
+  opacity: 1;
+  animation: g1 0.42s steps(2, end) 1 forwards;
+}
+
+.num.glitch::after {
+  opacity: 1;
+  animation: g2 0.42s steps(2, end) 1 forwards;
+}
+
+@keyframes g1 {
+  0%   { transform: translate(-8px, 2px); clip-path: inset(10% 0 55% 0); }
+  30%  { transform: translate(6px, -3px); clip-path: inset(60% 0 8% 0); }
+  60%  { transform: translate(-9px, 0); clip-path: inset(30% 0 38% 0); }
+  90%  { transform: translate(5px, 1px); clip-path: inset(78% 0 4% 0); }
+  100% { transform: none; clip-path: inset(0 0 100% 0); }
+}
+
+@keyframes g2 {
+  0%   { transform: translate(8px, -2px); clip-path: inset(50% 0 20% 0); }
+  30%  { transform: translate(-6px, 3px); clip-path: inset(8% 0 70% 0); }
+  60%  { transform: translate(9px, 0); clip-path: inset(70% 0 10% 0); }
+  90%  { transform: translate(-5px, -1px); clip-path: inset(25% 0 50% 0); }
+  100% { transform: none; clip-path: inset(0 0 100% 0); }
+}
+
+.typed {
+  margin: 1.6rem 0 0;
+  min-height: 1.6em;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 4.5vw, 1.7rem);
+  letter-spacing: -0.01em;
+}
+
+.typed i {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.15em;
+  vertical-align: -0.12em;
+  background: var(--cyan);
+  animation: blink 1s steps(1) infinite;
+}
+
+.down {
+  margin-top: 2rem;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 0.88rem;
+  color: var(--silver);
+  text-align: center;
+}
+
+.down::after {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 0.4rem auto 0;
+  border-right: 2px solid var(--cyan);
+  border-bottom: 2px solid var(--cyan);
+  transform: rotate(45deg);
+  animation: nudge 1.4s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  50% { transform: translateY(6px) rotate(45deg); }
+}
+
+/* --------------------------------------------------------------------------
+   6. CINTA MARQUESINA (TICKER)
+   -------------------------------------------------------------------------- */
+.ticker {
+  background: var(--cyan);
+  color: #04101c;
+  overflow: hidden;
+  transform: rotate(-1.2deg);
+  margin: 1.5rem -2vw 3rem;
+  padding: 0.75rem 0;
+  box-shadow: 0 0 35px rgba(52, 224, 255, 0.4);
+}
+
+.ticker div {
+  display: flex;
+  width: max-content;
+  animation: slide 22s linear infinite;
+}
+
+.ticker span {
+  flex: none;
+  padding-right: 2.2rem;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.ticker span::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-left: 2.2rem;
+  background: #04101c;
+  vertical-align: 0.08em;
+}
+
+@keyframes slide {
+  to { transform: translateX(-50%); }
+}
+
+/* --------------------------------------------------------------------------
+   7. CONTENEDOR STREAM & FILAS CON FOTOS AL COSTADO
+   -------------------------------------------------------------------------- */
+.stream-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.stream-row {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.stream-row.reverse {
+  grid-template-columns: 320px 1fr;
+}
+
+.stream-row-trio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+}
+
+.rsvp-photo {
+  max-width: 290px;
+  flex: 0 0 290px;
+}
+
+.rsvp-card {
+  flex: 1;
+  max-width: 580px;
+}
+
+/* Panel Terminal */
+.terminal-card {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--bg-card-border);
+  background: var(--card-glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+  width: 100%;
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: rgba(3, 7, 18, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 7px;
+}
+
+.t-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.t-red { background: #ff5f56; }
+.t-yellow { background: #ffbd2e; }
+.t-green { background: #27c93f; }
+
+.terminal-title {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--silver);
+  opacity: 0.85;
+}
+
+.terminal-status {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--terminal-green);
+}
+
+.t-row {
+  padding: 1.8rem 1.8rem;
+  position: relative;
+}
+
+.t-row + .t-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.t-comment {
+  margin: 0 0 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Cronograma estilizado */
+.timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.2rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.timeline-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.time-badge {
+  flex-shrink: 0;
+  background: rgba(52, 224, 255, 0.12);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+}
+
+.timeline-info strong {
+  display: block;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.timeline-info span {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--silver);
+  margin-top: 0.2rem;
+}
+
+/* Cuenta regresiva en formato terminal */
+.countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.cd-box {
+  background: rgba(0, 240, 255, 0.04);
+  border: 1px solid rgba(52, 224, 255, 0.15);
+  border-radius: 12px;
+  padding: 0.8rem 0.3rem;
+  text-align: center;
+}
+
+.cd-number {
+  display: block;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 6.2vw, 2.5rem);
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 0 16px rgba(52, 224, 255, 0.4);
+}
+
+.cd-tag {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--silver);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Fecha y detalles */
+.date-highlight {
+  margin: 0;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(4.2rem, 20vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  text-shadow: 0 0 30px rgba(52, 224, 255, 0.4);
+}
+
+.time-slot {
+  margin: 0.6rem 0 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.address-main {
+  margin: 0;
+  font-size: clamp(1.6rem, 6.5vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.address-sub {
+  margin: 0.3rem 0 0;
+  font-size: 1.15rem;
+  color: var(--silver);
+}
+
+.dress-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 5vw, 1.8rem);
+  font-weight: 800;
+}
+
+.dress-desc {
+  margin: 0.5rem 0 0;
+  font-size: 1.02rem;
+  color: var(--silver);
+}
+
+.pool-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  padding: 0.8rem 1.1rem;
+  border-radius: 10px;
+  background: rgba(52, 224, 255, 0.09);
+  border: 1px solid rgba(52, 224, 255, 0.3);
+  font-size: 0.95rem;
+}
+
+/* Especificaciones de música / fiesta */
+.tech-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+
+.spec-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.85rem 0.5rem;
+  text-align: center;
+}
+
+.spec-icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.spec-card strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #ffffff;
+}
+
+.spec-card small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--silver);
+  margin-top: 0.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   8. BOTONES Y ACCIONES (RESPONSIVE)
+   -------------------------------------------------------------------------- */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.3rem;
+}
+
+.btn-cyber {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.95rem 1.45rem;
+  background: var(--cyan);
+  color: #030c17;
+  font-family: var(--sans);
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--magenta);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+  border: none;
+  text-align: left;
+  width: 100%;
+}
+
+.btn-cyber:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--magenta);
+}
+
+.btn-cyber:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.btn-code {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  letter-spacing: -0.01em;
+}
+
+.btn-comment {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(3, 12, 23, 0.82);
+  letter-spacing: 0.01em;
+}
+
+.calendar-alt-link {
+  margin: 0.9rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--silver);
+  opacity: 0.85;
+}
+
+.calendar-alt-link a {
+  color: var(--cyan);
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.calendar-alt-link a:hover {
+  opacity: 0.8;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.14);
+}
+
+.btn-secondary .btn-code {
+  color: #ffffff;
+}
+
+.btn-secondary .btn-comment {
+  color: var(--cyan);
+  opacity: 0.95;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 2px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   9. FOOTER
+   -------------------------------------------------------------------------- */
+footer {
+  padding: 3rem 1.25rem calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+}
+
+.footer-quote {
+  margin: 0;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 7vw, 2.8rem);
+  text-shadow:
+    -2px 0 rgba(255, 63, 208, 0.8),
+    2px 0 rgba(52, 224, 255, 0.8);
+  letter-spacing: -0.02em;
+}
+
+.footer-code {
+  margin-top: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--terminal-green);
+  opacity: 0.85;
+}
+
+/* --------------------------------------------------------------------------
+   10. BOTÓN FLOTANTE DE MÚSICA
+   -------------------------------------------------------------------------- */
+#music {
+  position: fixed;
+  z-index: 900;
+  right: calc(1.2rem + env(safe-area-inset-right, 0px));
+  bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1px solid rgba(52, 224, 255, 0.7);
+  cursor: pointer;
+  background: rgba(5, 7, 15, 0.88);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  padding: 17px 0;
+  box-shadow: 0 0 22px rgba(52, 224, 255, 0.45);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+#music:hover {
+  transform: scale(1.08);
+  border-color: var(--cyan);
+}
+
+#music:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+#music i {
+  width: 4px;
+  height: 100%;
+  background: var(--cyan);
+  border-radius: 2px;
+  transform-origin: bottom;
+  animation: eq 0.9s ease-in-out infinite;
+}
+
+#music i:nth-child(2) { animation-delay: -0.3s; }
+#music i:nth-child(3) { animation-delay: -0.6s; }
+
+#music.off i {
+  animation: none;
+  transform: scaleY(0.18);
+  background: var(--muted);
+}
+
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.25); }
+  50%      { transform: scaleY(1); }
+}
+
+/* --------------------------------------------------------------------------
+   11. RESPONSIVE Y MODALES EN CELULARES Y TABLETS
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .hero-stream {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2.5rem 1rem 3rem;
+  }
+
+  .hero-photo {
+    max-width: 100%;
+    width: 100%;
+    transform: none !important;
+  }
+
+  .photo-card-wrap {
+    height: 280px;
+  }
+
+  .stream-row,
+  .stream-row.reverse {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    margin-bottom: 3rem;
+  }
+
+  .stream-row-trio {
+    flex-direction: column;
+    gap: 1.8rem;
+    margin-bottom: 3rem;
+  }
+
+  .rsvp-photo {
+    max-width: 100%;
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .gate-box {
+    padding: 1.5rem 1.1rem;
+    width: 94vw;
+  }
+
+  .t-row {
+    padding: 1.4rem 1.1rem;
+  }
+
+  .countdown-grid {
+    gap: 0.45rem;
+  }
+
+  .cd-box {
+    padding: 0.65rem 0.2rem;
+  }
+
+  .cd-number {
+    font-size: clamp(1.45rem, 5.8vw, 2rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. REDUCED MOTION Y ADAPTACIÓN
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .halo, .ticker div, #music i, .down::after, .glow-orb {
+    animation: none !important;
+    transition: none !important;
+  }
+  .btn-cyber {
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
