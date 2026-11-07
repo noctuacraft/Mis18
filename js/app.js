@@ -101,7 +101,7 @@
     if (gate) gate.classList.add("is-ready");
     if (gateProgressBar) gateProgressBar.style.width = "100%";
     if (gateProgressVal) gateProgressVal.textContent = "100%";
-    if (gateLog) gateLog.textContent = "> Sistema listo. Gráficos en memoria [OK]";
+    if (gateLog) gateLog.textContent = "> Sistema listo. [OK]";
     if (gateBtnText) gateBtnText.textContent = "init_party() [ENTER]";
     if (gateBtnSub) gateBtnSub.textContent = "// Tocá para acceder a la invitación";
   }
