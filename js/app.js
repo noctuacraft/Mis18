@@ -239,7 +239,7 @@
       "DTEND:20261219T220000Z",
       "SUMMARY:Mis 18 · Festejo & Pileta",
       "DESCRIPTION:Cumple de 18. Pileta activa: llevá malla, toalla y ojotas.",
-      "LOCATION:Esteban Fernández 790, González Catán, Buenos Aires",
+      "LOCATION:Quinta El Oso - Esteban Fernández 790, González Catán, Buenos Aires",
       "STATUS:CONFIRMED",
       "END:VEVENT",
       "END:VCALENDAR"
