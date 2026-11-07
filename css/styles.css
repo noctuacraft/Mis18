@@ -906,6 +906,15 @@ footer {
   opacity: 0.85;
 }
 
+.footer-credit {
+  margin-top: 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
 /* --------------------------------------------------------------------------
    10. BOTÓN FLOTANTE DE MÚSICA
    -------------------------------------------------------------------------- */
