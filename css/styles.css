@@ -788,6 +788,15 @@ header, main, footer, .ticker {
   color: #ffffff;
 }
 
+.address-venue {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.4rem, 5.5vw, 1.85rem);
+  font-weight: 800;
+  color: var(--cyan);
+  letter-spacing: -0.01em;
+  text-shadow: 0 0 15px rgba(52, 224, 255, 0.4);
+}
+
 .address-main {
   margin: 0;
   font-size: clamp(1.6rem, 6.5vw, 2.2rem);
